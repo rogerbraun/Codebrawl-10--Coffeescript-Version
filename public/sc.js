@@ -28,17 +28,16 @@ grayscale_from_rgb = function(r, g, b) {
   return [luminance, luminance, luminance, 0];
 };
 to_grayscale = function(canvas) {
-  var context, gray, gray_pixel, i, pixels, pos, _ref, _results;
+  var context, gray, gray_pixel, i, pixels, pos, _ref;
   context = canvas.getContext("2d");
   pixels = context.getImageData(0, 0, context.width, context.height);
   gray = [];
-  _results = [];
   for (i = 0, _ref = pixels.length / 4; 0 <= _ref ? i < _ref : i > _ref; 0 <= _ref ? i++ : i--) {
     pos = 4 * i;
     gray_pixel = grayscale_from_pixel(pixels.slice(pos, (pos + 3 + 1) || 9e9));
-    _results.push(gray = concat(gray, gray_pixel));
+    gray = concat(gray, gray_pixel);
   }
-  return _results;
+  return context.putImageData(gray, 0, 0);
 };
 start = function() {
   var canvas, context, source, _ref;

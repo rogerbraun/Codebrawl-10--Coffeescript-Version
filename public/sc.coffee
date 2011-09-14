@@ -30,6 +30,7 @@ to_grayscale = (canvas) ->
     pos = 4 * i
     gray_pixel = grayscale_from_pixel(pixels[pos..pos+3])
     gray = concat(gray, gray_pixel)
+  context.putImageData(gray, 0, 0)
 
 
 start = () -> 
