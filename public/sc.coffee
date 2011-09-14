@@ -1,3 +1,6 @@
+current_color = [0,124,209]
+current_delta = 50
+
 hue_from_rgb = (r, g, b) ->
   if r == b and b == g 
     0
@@ -82,14 +85,22 @@ select_color = (event) ->
   image_data = context.getImageData(0,0,canvas.width, canvas.height)
   pixels = image_data.data
   
-  color = get_pixel(pixels, pos)
-  selective_color(canvas, color, 14)
+  current_color = get_pixel(pixels, pos)
+  selective_color(canvas, current_color, current_delta)
+
 
 start = () -> 
   reset_image()
   canvas = document.getElementById("sc")
-  selective_color(canvas, [0,124,209], 14) 
+  selective_color(canvas, current_color, current_delta) 
   canvas.onclick = select_color
+  delta_change = (e) ->
+    current_delta = parseInt(this.value)
+    reset_image()
+    selective_color(canvas, current_color, current_delta)
+  distance = document.getElementById("distance")
+  distance.onchange = delta_change
+  distance.value = current_delta
 
 window.onload = start
 

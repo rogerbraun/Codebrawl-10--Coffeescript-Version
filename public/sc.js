@@ -1,4 +1,6 @@
-var color_distance, get_cursor_position, get_pixel, grayscale_from_pixel, grayscale_from_rgb, hue_from_pixel, hue_from_rgb, hue_map_from_pixels, reset_image, select_color, selective_color, set_pixel, start, to_grayscale;
+var color_distance, current_color, current_delta, get_cursor_position, get_pixel, grayscale_from_pixel, grayscale_from_rgb, hue_from_pixel, hue_from_rgb, hue_map_from_pixels, reset_image, select_color, selective_color, set_pixel, start, to_grayscale;
+current_color = [0, 124, 209];
+current_delta = 50;
 hue_from_rgb = function(r, g, b) {
   if (r === b && b === g) {
     return 0;
@@ -86,7 +88,7 @@ get_cursor_position = function(e, obj) {
   return [x, y];
 };
 select_color = function(event) {
-  var canvas, color, context, image_data, pixels, pos, x, y, _ref;
+  var canvas, context, image_data, pixels, pos, x, y, _ref;
   reset_image();
   canvas = this;
   _ref = get_cursor_position(event, canvas), x = _ref[0], y = _ref[1];
@@ -94,14 +96,22 @@ select_color = function(event) {
   context = canvas.getContext("2d");
   image_data = context.getImageData(0, 0, canvas.width, canvas.height);
   pixels = image_data.data;
-  color = get_pixel(pixels, pos);
-  return selective_color(canvas, color, 14);
+  current_color = get_pixel(pixels, pos);
+  return selective_color(canvas, current_color, current_delta);
 };
 start = function() {
-  var canvas;
+  var canvas, delta_change, distance;
   reset_image();
   canvas = document.getElementById("sc");
-  selective_color(canvas, [0, 124, 209], 14);
-  return canvas.onclick = select_color;
+  selective_color(canvas, current_color, current_delta);
+  canvas.onclick = select_color;
+  delta_change = function(e) {
+    current_delta = parseInt(this.value);
+    reset_image();
+    return selective_color(canvas, current_color, current_delta);
+  };
+  distance = document.getElementById("distance");
+  distance.onchange = delta_change;
+  return distance.value = current_delta;
 };
 window.onload = start;
